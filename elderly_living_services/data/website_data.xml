@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="file_scanning_sava.file_scanning_sava_template" name="File Scanning Sava">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure oe_empty">
+                <section class="s_title parallax s_parallax_is_fixed bg-black-50 pt24 pb24" data-vcss="001"
+                         data-snippet="s_title" data-scroll-background-ratio="1">
+                    <span class="s_parallax_bg oe_img_bg"
+                          style="background-image: url('/web/image/website.s_parallax_default_image'); background-position: 50% 0;"/>
+                    <div class="o_we_bg_filter bg-black-50"/>
+                    <div class="container">
+                        <h1>File Scanning And Save</h1>
+                    </div>
+                </section>
+                <t t-if="not request.website.is_public_user()">
+                    <section>
+                        <owl-component name="file_scanning_sava.main_template"/>
+                    </section>
+                </t>
+                <t t-else="">
+                    <section>
+                        <div id="wrap" class="oe_structure">
+                            <h1 class="text-center">Please log in to use this feature.</h1>
+                        </div>
+                    </section>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <data noupdate="1">
+        <record id="file_scanning_sava_page" model="website.page">
+            <field name="url">/file_scanning_sava</field>
+            <field name="is_published">True</field>
+            <field name="view_id" ref="file_scanning_sava.file_scanning_sava_template"/>
+            <field name="website_meta_description">This is the File scanning and save page of the website</field>
+        </record>
+
+        <record id="menu_file_scanning_sava_page" model="website.menu">
+            <field name="name">File Scanning</field>
+            <field name="url">/file_scanning</field>
+            <field name="page_id" ref="file_scanning_sava_page"/>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">60</field>
+        </record>
+    </data>
+
+</odoo>

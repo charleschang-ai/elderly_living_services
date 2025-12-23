@@ -1,0 +1,11 @@
+<odoo>
+    <data noupdate="1">
+        <record id="seq_elder_service" model="ir.sequence">
+            <field name="name">Elder Service Pppointment</field>
+            <field name="code">elderly.appointment</field>
+            <field name="prefix">SR</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

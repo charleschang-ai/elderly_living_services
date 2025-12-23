@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_elderly_service_tree" model="ir.ui.view">
+        <field name="name">elderly.service.tree</field>
+        <field name="model">elderly.service</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="category_id"/>
+                <field name="product_id"/>
+                <field name="price" widget="monetary"/>
+                <field name="duration" widget="float_time"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_elderly_service_form" model="ir.ui.view">
+        <field name="name">elderly.service.form</field>
+        <field name="model">elderly.service</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <field name="image" widget="image" class="oe_avatar" options="{'preview_image': 'image'}"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="例如：上門助浴服務"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="基本資訊">
+                            <field name="category_id" options="{'no_create': True}"/>
+                            <field name="product_id" domain="[('sale_ok', '=', True)]"
+                                   context="{'default_detailed_type': 'service'}"/>
+                        </group>
+                        <group string="商務資訊">
+                            <field name="price"/>
+                            <field name="duration" widget="float_time"/>
+                            <field name="unit_name"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="is_published"/>
+                    </group>
+                    <notebook>
+                        <page string="描述">
+                            <field name="description" placeholder="輸入詳細服務流程..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_elderly_appointment_tree" model="ir.ui.view">
+        <field name="name">elderly.appointment.tree</field>
+        <field name="model">elderly.appointment</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'submitted'" decoration-success="state == 'sale'"
+                  decoration-muted="state == 'cancel'">
+                <field name="name"/>
+                <field name="service_id"/>
+                <field name="contact_name"/>
+                <field name="phone"/>
+                <!--                <field name="appointment_date"/>-->
+                <field name="state" widget="badge" decoration-info="state == 'confirmed'"
+                       decoration-success="state == 'sale'"/>
+                <field name="payment_status" widget="badge"
+                       decoration-success="payment_status == 'paid'"
+                       decoration-info="payment_status == 'partial'"
+                       decoration-warning="payment_status == 'not_paid'"
+                       decoration-muted="payment_status == 'no_invoice'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_elderly_appointment_form" model="ir.ui.view">
+        <field name="name">elderly.appointment.form</field>
+        <field name="model">elderly.appointment</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit" string="提交預約" type="object" invisible="state != 'draft'"
+                            class="oe_highlight"/>
+                    <button name="action_confirm" string="確認預約" type="object" invisible="state != 'submitted'"
+                            class="oe_highlight"/>
+                    <button name="action_create_sale_order" string="生成銷售訂單" type="object"
+                            invisible="state != 'confirmed'" class="oe_highlight"/>
+                    <button name="action_cancel" string="取消預約" type="object"
+                            invisible="state in ['sale', 'canceled']"/>
+                    <button name="action_complete" string="服務完成" type="object"
+                            invisible="state != 'sale'" class="oe_highlight"
+                            confirm="確定服務已完成並結案嗎？"/>
+
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,submitted,confirmed,sale,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_sales" type="object" class="oe_stat_button" icon="fa-usd"
+                                invisible="sale_order_count == 0">
+                            <field name="sale_order_count" widget="statinfo" string="銷售訂單"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name" string="預約單號"/>
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="服務細節" name="service_info">
+                            <field name="service_id" options="{'no_create': True}"/>
+                            <field name="product_id"/>
+                            <!--                        <field name="appointment_date" widget="datetime"/>-->
+                            <label for="start_time" string="預約時間段"/>
+                            <div class="o_row">
+                                <field name="start_time" widget="datetime" placeholder="開始時間"/>
+                                <span class="oe_grey">至</span>
+                                <field name="end_time" widget="datetime" placeholder="結束時間"/>
+                            </div>
+                            <field name="duration" widget="float_time" readonly="1"/>
+                        </group>
+                        <group string="客戶資訊" name="customer_info">
+                            <field name="user_id" widget="many2one_avatar_user"/>
+                            <field name="contact_name"/>
+                            <field name="phone" widget="phone"/>
+                            <field name="email" widget="email"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="需求備註" name="notes">
+                            <field name="note" placeholder="在此輸入老人家的特殊需求或注意事項..."/>
+                        </page>
+                        <page string="拒絕/取消原因" name="rejection" invisible="state != 'rejected'">
+                            <field name="rejection_reason"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_elderly_category_tree" model="ir.ui.view">
+        <field name="name">elderly.service.category.tree</field>
+        <field name="model">elderly.service.category</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+
+</odoo>

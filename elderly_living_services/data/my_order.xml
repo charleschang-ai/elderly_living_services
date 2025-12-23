@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="my_appointments_template" name="My Elderly Appointments">
+        <t t-call="website.layout">
+            <style>
+                .elder-bg-blue { background-color: #F8FBFF; }
+                .elder-text-blue { color: #0D47A1; }
+                .order-card {
+                    border: none;
+                    border-radius: 15px;
+                    box-shadow: 0 4px 20px rgba(13, 71, 161, 0.08);
+                    overflow: hidden;
+                    background: white;
+                }
+                .table thead {
+                    background-color: #0D47A1;
+                    color: white;
+                }
+                .table th { font-weight: 500; border: none; padding: 15px; }
+                .table td { vertical-align: middle; padding: 15px; border-bottom: 1px solid #eee; }
+
+                /* 狀態標籤自定義 */
+                .badge-status { padding: 6px 12px; border-radius: 50px; font-weight: 500; font-size: 0.85rem; }
+                .status-draft { background-color: #E0E0E0; color: #616161; }
+                .status-submitted { background-color: #E3F2FD; color: #1976D2; }
+                .status-confirmed { background-color: #E8F5E9; color: #2E7D32; }
+                .status-rejected { background-color: #FFEBEE; color: #C62828; }
+
+                .invoice-link { color: #1976D2; text-decoration: none; font-weight: bold; }
+                .invoice-link:hover { text-decoration: underline; }
+
+                /* 手機端優化：隱藏次要列，調整字體 */
+                @media (max-width: 768px) {
+                    .hide-mobile { display: none; }
+                    .table td { font-size: 0.9rem; padding: 10px 5px; }
+                }
+            </style>
+
+            <div id="wrap" class="elder-bg-blue">
+                <section class="pt48 pb32">
+                    <div class="container text-center">
+                        <h2 class="fw-bold elder-text-blue">我的預約紀錄</h2>
+                        <p class="text-muted">您可以隨時查看預約狀態及相關賬單</p>
+                    </div>
+                </section>
+
+                <section class="pb64">
+                    <div class="container">
+                        <div class="order-card p-3 p-md-4">
+                            <t t-if="not appointments">
+                                <div class="text-center py-5">
+                                    <i class="fa fa-calendar-o fa-3x text-muted mb-3"/>
+                                    <p class="h5 text-muted">目前暫無預約紀錄</p>
+                                    <a href="/elderly_services" class="btn btn-primary rounded-pill mt-3 px-4">去預約服務</a>
+                                </div>
+                            </t>
+
+                            <t t-if="appointments">
+                                <div class="table-responsive">
+                                    <table class="table mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th class="ps-4">服務項目</th>
+                                                <th class="hide-mobile">申請時間</th>
+                                                <th>服務時間</th>
+                                                <th class="text-center">狀態</th>
+                                                <th class="text-center">支付狀態</th>
+                                                <th class="text-end pe-4">相關賬單</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="appointments" t-as="order">
+                                                <tr>
+                                                    <td class="ps-4">
+                                                        <div class="fw-bold elder-text-blue"><t t-esc="order.service_id.name"/></div>
+                                                        <div class="small text-muted d-md-none"><t t-esc="order.create_date.strftime('%Y-%m-%d')"/></div>
+                                                    </td>
+                                                    <td class="hide-mobile text-muted">
+                                                        <t t-esc="order.create_date.strftime('%Y-%m-%d %H:%M')"/>
+                                                    </td>
+                                                    <td>
+                                                        <div class="small">
+                                                            <i class="fa fa-clock-o text-primary me-1"/>
+                                                            <t t-esc="order.start_time.strftime('%m/%d %H:%M')"/>
+                                                            至 <t t-esc="order.end_time.strftime('%m/%d %H:%M')"/>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <span t-attf-class="badge-status status-#{order.state}">
+                                                            <t t-esc="dict(order._fields['state'].selection).get(order.state)"/>
+                                                        </span>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <span t-attf-class="badge-status status-#{order.payment_status}">
+                                                            <t t-esc="dict(order._fields['payment_status'].selection).get(order.payment_status)"/>
+                                                        </span>
+                                                    </td>
+                                                    <td class="text-end pe-4">
+                                                        <t t-if="order.state == 'sale'">
+                                                            <a href="/my/invoices" class="invoice-link">
+                                                                <i class="fa fa-file-text-o me-1"/>查看賬單
+                                                            </a>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span class="text-light small">-</span>
+                                                        </t>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+
+    <data noupdate="1">
+        <record id="my_appointments_page_record" model="website.page">
+            <field name="url">/my/elderly_appointments</field>
+            <field name="is_published">True</field>
+            <field name="view_id" ref="elderly_living_services.my_appointments_template"/>
+        </record>
+
+        <record id="menu_my_appointments" model="website.menu">
+            <field name="name">我的預約</field>
+            <field name="url">/my/elderly_appointments</field>
+            <field name="page_id" ref="my_appointments_page_record"/>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence" type="int">60</field>
+        </record>
+    </data>
+</odoo>
