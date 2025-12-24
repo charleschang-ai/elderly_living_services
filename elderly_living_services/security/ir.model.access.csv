@@ -2,3 +2,4 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_elderly_category,elderly.category,model_elderly_service_category,,1,1,1,1
 access_elderly_service,elderly.service,model_elderly_service,,1,1,1,1
 access_elderly_appointment,elderly.appointment,model_elderly_appointment,,1,1,1,1
+access_elderly_appointment_report,elderly.appointment.report,model_elderly_appointment_report,base.group_user,1,1,1,1

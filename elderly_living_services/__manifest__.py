@@ -20,9 +20,11 @@
         'data/make_appointment.xml',
         'data/sequence_data.xml',
         'data/my_order.xml',
+        'report/appointment_report_views.xml',
         'views/elder_service_menuitem.xml',
         'views/elder_service.xml',
         'views/appointment_form.xml',
+
     ],
     # 'assets': {
     #     # 'web.assets_backend': [

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_elderly_appointment_report_pivot" model="ir.ui.view">
+        <field name="name">elderly.appointment.report.pivot</field>
+        <field name="model">elderly.appointment.report</field>
+        <field name="arch" type="xml">
+            <pivot string="預約分析" sample="1">
+                <field name="date" interval="month" type="row"/>
+                <field name="service_id" type="col"/>
+                <field name="price_total" type="measure"/>
+                <field name="nbr" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_elderly_appointment_report_list" model="ir.ui.view">
+        <field name="name">elderly.appointment.report.list</field>
+        <field name="model">elderly.appointment.report</field>
+        <field name="arch" type="xml">
+            <list string="預約分析明細" action="action_open_appointment" type="object" create="false">
+                <field name="date"/>
+                <field name="appointment_id" string="單號識別"/>
+                <field name="service_id"/>
+                <field name="user_id" widget="many2one_avatar_user"/>
+                <field name="price_total" sum="總金額"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'submitted'"
+                       decoration-success="state == 'sale'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_elderly_appointment_report_graph" model="ir.ui.view">
+        <field name="name">elderly.appointment.report.graph</field>
+        <field name="model">elderly.appointment.report</field>
+        <field name="arch" type="xml">
+            <graph string="預約趨勢" type="bar" sample="1">
+                <field name="date" interval="month"/>
+                <field name="price_total" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_elderly_appointment_report_search" model="ir.ui.view">
+        <field name="name">elderly.appointment.report.search</field>
+        <field name="model">elderly.appointment.report</field>
+        <field name="arch" type="xml">
+            <search string="預約分析搜索">
+                <field name="service_id"/>
+                <field name="user_id"/>
+                <filter string="本月預約" name="this_month"
+                        domain="[('date','&gt;=', context_today().strftime('%Y-%m-01'))]"/>
+<!--                <separator/>-->
+                <group>
+                    <filter string="服務項目" name="service_id" context="{'group_by':'service_id'}"/>
+                    <filter string="狀態" name="state" context="{'group_by':'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_elderly_appointment_report" model="ir.actions.act_window">
+        <field name="name">服務預約分析</field>
+        <field name="res_model">elderly.appointment.report</field>
+        <field name="view_mode">pivot,graph</field>
+        <field name="search_view_id" ref="view_elderly_appointment_report_search"/>
+        <field name="context">{'search_default_group_service': 1}</field>
+    </record>
+
+    <menuitem id="menu_elderly_report_root"
+              name="報表分析"
+              parent="menu_elderly_root"
+              sequence="50">
+
+        <menuitem id="menu_appointment_report_analysis"
+                  name="預約統計分析"
+                  action="action_elderly_appointment_report"
+                  sequence="10"/>
+    </menuitem>
+</odoo>
