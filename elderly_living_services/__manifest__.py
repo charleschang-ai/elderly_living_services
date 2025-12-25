@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 ################################################################################
-#    Author: Charles
+#    Author: Don Shan
 #
 ################################################################################
 {
@@ -9,8 +9,8 @@
     'category': 'Extra Tools',
     'summary': """To ensure that every senior citizen enjoys a dignified, convenient, and fulfilling later life.""",
     'description': """To ensure that every senior citizen enjoys a dignified, convenient, and fulfilling later life.""",
-    'author': 'Robert Lee',
-    'maintainer': 'Charles',
+    'author': 'Don Shan',
+    'maintainer': 'Don Shan',
     'depends': ['web', 'base', 'sale', 'website', 'account'],
     'data': [
         'security/ir.model.access.csv',
@@ -26,16 +26,6 @@
         'views/appointment_form.xml',
 
     ],
-    # 'assets': {
-    #     # 'web.assets_backend': [
-    #     #     'file_scanning_sava/static/src/js/**/*',
-    #     #     'file_scanning_sava/static/src/xml**/*',
-    #     # ],
-    #     'web.assets_frontend': [
-    #         'file_scanning_sava/static/src/js/**/*',
-    #         'file_scanning_sava/static/src/xml/**/*',
-    #     ],
-    # },
     'images': ['static/description/icon.png'],
     'license': 'AGPL-3',
     'installable': True,
